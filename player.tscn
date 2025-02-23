@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://jx4axjl81fpm"]
+[gd_scene load_steps=8 format=3 uid="uid://jx4axjl81fpm"]
 
 [ext_resource type="Texture2D" uid="uid://duurmgrbk4k5v" path="res://art/playerGrey_up1.png" id="1_ag314"]
+[ext_resource type="Script" path="res://Player.cs" id="1_y4ugr"]
 [ext_resource type="Texture2D" uid="uid://cix4ihij72epx" path="res://art/playerGrey_up2.png" id="2_rsfy8"]
 [ext_resource type="Texture2D" uid="uid://bfg3lsw8neh3n" path="res://art/playerGrey_walk1.png" id="3_n7gfo"]
 [ext_resource type="Texture2D" uid="uid://cy3nt2e1s4rj" path="res://art/playerGrey_walk2.png" id="4_0dtqa"]
@@ -35,8 +36,10 @@ radius = 27.0
 height = 68.0
 
 [node name="Player" type="Area2D"]
+script = ExtResource("1_y4ugr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -1)
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_4iap1")
 animation = &"up"
