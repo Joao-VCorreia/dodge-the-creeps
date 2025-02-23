@@ -59,5 +59,17 @@ public partial class Player : Area2D
 			x: Mathf.Clamp(Position.X, 0, ScreenSize.X), // Limita a posição X dentro da tela
 			y: Mathf.Clamp(Position.Y, 0, ScreenSize.Y) // Limita a posição Y dentro da tela
 		); 
+
+		if (movimento.X != 0) // Verifica movimento horizontal (X positivo = direita, X negativo = esquerda)
+		{
+			animatedSprit.Animation = "walk"; // Define animação de caminhada lateral
+			animatedSprit.FlipV = false; // Desativa flip vertical para evitar distorção
+			animatedSprit.FlipH = movimento.X < 0; // Inverte horizontalmente o sprite se o movimento for para a esquerda (X < 0)
+		}
+		else if(movimento.Y != 0) // Se não há movimento horizontal, verifica movimento vertical (Y positivo = baixo, Y negativo = cima)
+		{
+			animatedSprit.Animation = "up"; // Define animação de movimento vertical 
+			animatedSprit.FlipV = movimento.Y > 0; // Inverte verticalmente o sprite se o movimento for para baixo (Y > 0). Útil se a animação "up" originalmente aponta para cima.
+		}
 	}
 }
