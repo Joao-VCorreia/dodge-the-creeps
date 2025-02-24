@@ -3,16 +3,45 @@ using System;
 
 public partial class Player : Area2D
 {
+	[Signal]
+	public delegate void HitEventHandler(); //Emite um sinal de hit
+
 	[Export]
 	public int Velocidade = 400; // Variavel em export para aparecer no editor
+
 	public Vector2 ScreenSize; // Vector2 armazena valores para X e Y, seja quais forem
 	private AnimatedSprite2D animatedSprit;
+
 	public override void _Ready() //_Ready é usado quando queremos garantir que todos os nós filhos estão carregados
 	{
-		ScreenSize = GetViewportRect().Size; //Get nos traz um retangulo na forma do view port e size extrai o tamanho
+		//Get nos traz um retangulo na forma do view port e size extrai o tamanho
+		ScreenSize = GetViewportRect().Size; 
+		
+		// É ideal importar nós filhos dentro de ready
+		animatedSprit = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 
-		animatedSprit = GetNode<AnimatedSprite2D>("AnimatedSprite2D"); // É ideal importar nós filhos dentro de ready()
+		//Conecta o sinal body_entered para que, quando um corpo entrar em contato, chame OnPlayerBodyEntered
+		Connect("body_entered", new Callable(this, nameof(OnPlayerBodyEntered)));
+
+		Hide();
 	}
+
+	public void OnPlayerBodyEntered(Node body)
+	{
+		Hide(); // Faz o jogador desaparecer ao ser atingido.
+		EmitSignal(nameof(Hit)); // Emite o sinal "Hit"
+		
+		// Desativa a colisão de forma diferida para evitar conflitos durante o processamento de física.
+		GetNode<CollisionShape2D>("CollisionShape2D").SetDeferred("disabled", true);
+	}
+
+	public void Start(Vector2 pos)
+	{
+		Position = pos;
+		Show();
+		GetNode<CollisionShape2D>("CollisionShape2D").Disabled = false;
+	}
+
 
 	public override void _Process(double delta)// atualiza a cada quadro do jogo
 	{
