@@ -15,25 +15,34 @@ public partial class Hud : CanvasLayer
 
 		GetNode<Timer>("MessageTimer").Start(); // Inicia o timer "MessageTimer"
 	}	
-
-
-	public async Task ShowGameOver()
+	async public void ShowGameOver()
 	{
-		ShowMessage("Gamer Over!");
+		ShowMessage("Gamer Over!"); //Envia a mensagem de Game Over
 
-		var messagerTimer = GetNode<Timer>("MessagerTimer");
-		await ToSignal(messagerTimer, "timeout");
+		var messagerTimer = GetNode<Timer>("MessageTimer"); //Seleciona nó com o tempo da mensagem
+		await ToSignal(messagerTimer, "timeout"); //Aguarda o sinal "timeout" de MessagerTimer definido em "Wait Timer" para 
+		
+		var message = GetNode<Label>("Message"); //Seleciona o nó Message
+		message.Text = "Dodge the\nCreeps!"; //Altera a propriedade Text 
+		message.Show(); //Mostra a mensagem
 
-		var message = GetNode<Label>("Message");
-		message.Text = "Dodge the\nCreeps!";
-		message.Show();
-
-		await ToSignal(GetTree().CreateTimer(1), "timeout");
-		GetNode<Button>("StartButton").Show();
+		await ToSignal(GetTree().CreateTimer(1), "timeout"); //GetTree() retorna ao nó raiz, enquanto CreateTimer(1) cria temporariamente um timer com Wait Time de 1 segundo, quanto o sinal timeout é acionado o programa continua
+		GetNode<Button>("StartButton").Show(); //Mostra o botão de iniciar o jogo
 	}
 
-	public void UpdateScore(int score)
+	public void UpdateScore(int score) //Função que será chamada para atualizar score
 	{
-		GetNode<Label>("ScoreLabel").Text = score.ToString();
+		GetNode<Label>("Score").Text = score.ToString(); //Transforma o valor int em texto para ser exibido no label
+	}
+
+	public void OnStartButtonPressed()
+	{
+		GetNode<Button>("StartButton").Hide();
+		EmitSignal(SignalName.StartGame);
+	}
+
+	public void OnMessageTimerTimeout()
+	{
+		GetNode<Label>("Message").Hide();
 	}
 }

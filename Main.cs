@@ -12,32 +12,61 @@ public partial class Main : Node
 
 	public int Score;
 
+	private Hud _hud;
+
     public override void _Ready()
     {
 		GD.Randomize();
-		NewGame();
+
+		//Obtem referencia de HUD
+		_hud = GetNode<Hud>("HUD");
+
+		//Conecta o sinal diretamente
+		_hud.StartGame += NewGame;
+
+		//Conecta o sinal de Hit do player
+		var player = GetNode<Player>("Player");
+		player.Hit += GameOver;
+
+		GetNode<Timer>("ScoreTimer").Timeout += OnScoreTimerTimeout;
     }
 
 	public void GameOver()
 	{
 		GetNode<Timer>("MobTimer").Stop();
 		GetNode<Timer>("ScoreTimer").Stop();
+
+		var musica = GetNode<AudioStreamPlayer2D>("Musica");
+		musica.Stop();
+		var musicaMorte = GetNode<AudioStreamPlayer2D>("MorteSom");
+		musicaMorte.Play();
+
+		GetNode<Hud>("HUD").ShowGameOver();
 	}
 
 	public void NewGame()
 	{
 		Score = 0;
-
+		
 		var player = GetNode<Player>("Player");
 		var starPosition = GetNode<Marker2D>("StartPosition");
 		player.Start(starPosition.Position);
 
 		GetNode<Timer>("StartTimer").Start();
+
+		var hud = GetNode<Hud>("HUD");
+		hud.UpdateScore(Score);
+		hud.ShowMessage("Get Ready!");
+
+		var musica = GetNode<AudioStreamPlayer2D>("Musica");
+		musica.Play();
 	}
 
 	public void OnScoreTimerTimeout()
 	{
 		Score++;
+		GetNode<Hud>("HUD").UpdateScore(Score);
+		GD.Print("ScoreTimer disparado!");
 	}
 
 	public void OnStartTimerTimeout()

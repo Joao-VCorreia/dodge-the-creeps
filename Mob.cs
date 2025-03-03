@@ -24,7 +24,6 @@
 
       private void OnScreenExited()
       {
-        GD.Print("Mob saiu da tela!");
         QueueFree();
       }
   }
